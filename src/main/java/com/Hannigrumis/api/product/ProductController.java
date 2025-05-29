@@ -5,8 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Hannigrumis.api.category.CategoryService;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -35,17 +33,17 @@ public class ProductController {
 
     @CrossOrigin
     @GetMapping("/all")
-    public List<Product> getProducts() {
-        return productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts() {
+        return ResponseEntity.ok(productService.getProducts());
     }
 
     @CrossOrigin
-    @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> addProduct(@RequestParam String name,
-                                        @RequestParam String categoryName,
+                                        @RequestParam Long categoryId,
                                         @RequestParam MultipartFile file                        
     ) {
-            Product product = productService.addProduct(name, categoryName, file); 
+            Product product = productService.addProduct(name, categoryId, file); 
 
             if (product == null) {
                 return ResponseEntity.badRequest().body("Invalid category.");
@@ -64,10 +62,10 @@ public class ProductController {
     @PutMapping(path = "/edit", consumes={MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> editProduct(@RequestParam Long id,
                                         @RequestParam String name,
-                                        @RequestParam String categoryName,
+                                        @RequestParam Long categoryId,
                                         @RequestParam(required = false) MultipartFile file
     ){
-        Optional<Product> edited = productService.editProduct(id, name, categoryName, file);
+        Optional<Product> edited = productService.editProduct(id, name, categoryId, file);
         if (edited.isPresent()) {
             return ResponseEntity.ok(edited.get());
         }

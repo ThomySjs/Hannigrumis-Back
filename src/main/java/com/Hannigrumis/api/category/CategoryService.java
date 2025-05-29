@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.Hannigrumis.api.product.ProductRepository;
-import com.Hannigrumis.api.product.ProductService;
 import com.Hannigrumis.api.productImages.ImageService;
 
 @Component
@@ -29,9 +28,9 @@ public class CategoryService {
     }
 
     public Optional<Category> addCategory(String name, String description, MultipartFile file) {
-        Optional<Category> savedCategory = categoryRepository.findById(name);
+        List<Category> exsists = categoryRepository.findByName(name);
 
-        if (savedCategory.isPresent()) {
+        if (!exsists.isEmpty()) {
             return Optional.empty();
         }
 
@@ -42,11 +41,11 @@ public class CategoryService {
         return Optional.of(categoryRepository.saveAndFlush(category));
     }
 
-    public Boolean deleteCategoryByName(String name) {
+    public Boolean deleteCategoryById(Long id) {
         try {
-            Category category = categoryRepository.findById(name).get();
+            Category category = categoryRepository.findById(id).get();
             productRepository.deleteProductByCategory(category);
-            categoryRepository.deleteById(name);
+            categoryRepository.deleteById(id);
 
             return true;
         }
@@ -55,8 +54,28 @@ public class CategoryService {
         }
     }
 
-    public Optional<Category> findCategoryByName(String name) {
-        return categoryRepository.findById(name);
+    public Optional<Category> editCategory(Long id, String name, String description, MultipartFile file) {
+        try{
+            Category category = categoryRepository.findById(id).get();
+
+            String imagePath = (file == null) ? category.getImagePath() : imageService.createImageFile(file);
+
+            category.setName(name);
+            category.setImagePath(imagePath);
+            category.setDescription(description);
+
+            categoryRepository.save(category);
+
+            return Optional.of(category);
+        }
+        catch (NoSuchElementException e) {
+            return Optional.empty();
+        }
+
+    }
+
+    public Optional<Category> findCategoryById(Long id) {
+        return categoryRepository.findById(id);
     }
 
 }

@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Hannigrumis.api.productImages.ImageService;
 
-import java.io.Console;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,9 +28,9 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product addProduct(String name, String categoryName, MultipartFile file) {
+    public Product addProduct(String name, Long categoryId, MultipartFile file) {
         
-        Optional<Category> categoryCheck = categoryService.findCategoryByName(categoryName);
+        Optional<Category> categoryCheck = categoryService.findCategoryById(categoryId);
 
         if (!categoryCheck.isPresent()) {
             return null;
@@ -51,9 +50,9 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Optional<Product> editProduct(Long id, String name, String categoryName, MultipartFile file) {
+    public Optional<Product> editProduct(Long id, String name, Long categoryId, MultipartFile file) {
         Optional<Product> productCkeck = productRepository.findById(id);
-        Optional<Category> categoryCheck = categoryService.findCategoryByName(categoryName);
+        Optional<Category> categoryCheck = categoryService.findCategoryById(categoryId);
 
         
         if (!productCkeck.isPresent() || !categoryCheck.isPresent()) {
@@ -62,7 +61,6 @@ public class ProductService {
         Product product = productCkeck.get();
         String imagePath = (file == null) ? productCkeck.get().getImagePath() : imageService.createImageFile(file);
         
-        System.out.println("hola");
         product.setName(name);
         product.setCategory(categoryCheck.get());
         product.setImagePath(imagePath);

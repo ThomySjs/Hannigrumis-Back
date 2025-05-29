@@ -12,12 +12,6 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Product product SET product.name = :name, product.category = :category, product.imagePath = :imagePath WHERE product.id = :id")
-    int updateProduct(@Param("id") Long id, @Param("name") String name, @Param("category") Category category, @Param("imagePath") String imagePath);
-
     @Modifying
     @Transactional
     @Query("DELETE FROM Product p WHERE p.category = :category")
