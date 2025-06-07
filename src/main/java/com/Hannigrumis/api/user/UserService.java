@@ -1,24 +1,38 @@
 package com.Hannigrumis.api.user;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.Hannigrumis.api.login.Login;
+import com.Hannigrumis.api.property.EmailService;
+import com.Hannigrumis.api.security.JwtUtils;
+
+import io.jsonwebtoken.JwtException;
 
 @Component
 public class UserService {
-    private UserRepository userRepository;
-    private String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
 
+    private String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private EmailService emailService;
 
-    public  UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public Boolean validateEmail(String email) {
         if (!email.matches(this.emailRegex)) {
@@ -46,19 +60,40 @@ public class UserService {
 
         return ResponseEntity.badRequest().body("User already exists.");
     }
+    
+    public ResponseEntity<?> loginSystem(Login login) {
+        try {
+            Authentication authenticationRequest = 
+                UsernamePasswordAuthenticationToken.unauthenticated(login.getEmail(), login.getPassword());
 
-    public ResponseEntity<?> login(User user) {
-        if (!validateEmail(user.getEmail())) {
-            return ResponseEntity.badRequest().body("Invalid email.");
+            Authentication authenticationResponse = 
+                this.authenticationManager.authenticate(authenticationRequest);
+            
+            User user = userRepository.findByEmail(login.getEmail());
+            if (!user.isVerified()) {
+                emailService.sendConfirmationEmail(user.getEmail());
+                return ResponseEntity.status(401).body("Email not verified.");
+            }
+            
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("token", jwtUtils.generateToken(login.getEmail()));
+            return ResponseEntity.ok().body(hashMap);
         }
-        User foundUser = findUserByEmail(user.getEmail());
-        if (Objects.isNull(foundUser)) {
-            return ResponseEntity.notFound().build();
+        catch (AuthenticationException e) {
+            return ResponseEntity.badRequest().build();
         }
+    }
 
-        /* Validate password */
-        
-        return ResponseEntity.ok("Token");
+    public ResponseEntity<?> emailVerification(String token) {
+        try {
+            User user = userRepository.findByEmail(jwtUtils.getUsernameFromToken(token));
+            user.verify();
+            userRepository.save(user);
+            return ResponseEntity.ok("Email verified.");
+        }
+        catch (JwtException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     public User findUserByEmail(String email) {

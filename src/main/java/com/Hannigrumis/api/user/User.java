@@ -19,6 +19,8 @@ public class User {
     @NotNull
     private String password;
 
+    private Boolean verified = false;
+
     public User() {
         
     }
@@ -48,6 +50,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Boolean isVerified() {
+        return verified;
+    }
+
+    public void verify() {
+        this.verified = true;
     }
 
     public void setEmail(String email) {

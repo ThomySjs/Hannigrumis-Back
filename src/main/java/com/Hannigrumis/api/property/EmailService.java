@@ -31,7 +31,6 @@ public class EmailService {
         message.setTo(to);
         message.setSubject("Confirmation email.");
         message.setText(token);
-        message.setFrom("Hannigrumis@gmail.com");
 
         mailSender.send(message);
     }
