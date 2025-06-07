@@ -22,6 +22,8 @@ public class DotenvEnvironmentPostProcessor implements ApplicationListener<Appli
         props.put("spring.datasource.username", dotenv.get("DB_USER"));
         props.put("spring.datasource.password", dotenv.get("DB_PASSWORD"));
         props.put("jwt.secret", dotenv.get("JWT_SECRET"));
+        props.put("spring.mail.username", dotenv.get("EMAIL_USERNAME"));
+        props.put("spring.mail.password", dotenv.get("EMAIL_PASSWORD"));
 
         ConfigurableEnvironment environment = event.getEnvironment();
         environment.getPropertySources().addFirst(new MapPropertySource("dotenv", props));
