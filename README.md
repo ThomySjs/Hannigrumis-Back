@@ -1,3 +1,8 @@
+### Requisitos
+
+- **Java** 23 o superior  
+- **Maven** 3.9.9 o superior
+
 ### Pasos para iniciar correctamente el servidor
 
 1. Clonar el repositorio:
@@ -18,12 +23,15 @@ DB_URL=jdbc:mysql://localhost:3306/mydb?createDatabaseIfNotExist=true
 DB_USER=root
 DB_PASSWORD=contraseña
 
-# jwt
+# JWT (La clave debe ser como mínimo de 32 bytes y contener solo letras y numeros)
 JWT_SECRET=thisIsMysecregtfrdesww233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs8877465sbbdd
-# (La clave debe ser como mínimo de 32 bytes y contener solo letras y numeros)
+
+# Email y contraseña de acceso al servidor SMTP (en este caso esta configurado para gmail)
+EMAIL_USERNAME=tuemail@gmail.com
+EMAIL_PASSWORD=uupr flxb tnlw cxtr #(Se debe utilizar una contraseña de aplicacion, no utilizar la contraseña con la que accede al email.)
 ```
 
-4. Con el archivo `.env` configurado, solo queda inicializar el servidor:
+4. Con el archivo `.env` configurado, solo queda inicializar el servidor utilizando el siguiente comando dentro de la carpeta raiz:
 
 ```bash
 mvn spring-boot:run
