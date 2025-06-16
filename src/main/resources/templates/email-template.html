@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+    <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px;">
+        <h1>Confirma tu cuenta</h1>
+        <p>Por favor hacé clic en el siguiente botón para confirmar tu correo electrónico:</p>
+        <a th:href="${token}"
+           style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #FF677D; color: white; text-decoration: none; border-radius: 6px;">
+            Confirmar cuenta
+        </a>
+    </div>
+</body>
+</html>

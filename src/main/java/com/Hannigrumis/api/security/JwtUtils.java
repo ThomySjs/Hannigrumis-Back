@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -38,12 +39,37 @@ public class JwtUtils {
             .compact();
     }
 
+    public String generateEmailConfirmationToken(String email, Integer expMs) {
+        return Jwts.builder()
+            .subject(email)
+            .claim("type", "confirmation")
+            .issuedAt(new Date())
+            .expiration(new Date((new Date().getTime() + expMs)))
+            .signWith(key)
+            .compact();
+    }
+
     public String getUsernameFromToken(String jwt) {
         return Jwts.parser()
             .verifyWith(key).build()
             .parseSignedClaims(jwt)
             .getPayload()
             .getSubject();
+    }
+
+    public Claims getClaimsFromToken(String jwt) {
+        return Jwts.parser()
+            .verifyWith(key).build()
+            .parseSignedClaims(jwt)
+            .getPayload();
+    }
+
+    public boolean isConfirmationToken(String jwt) {
+        Claims claims = this.getClaimsFromToken(jwt);
+        if (claims.get("type") != null) {
+            return true;
+        }
+        return false;
     }
 
     public boolean validateToken(String token) {

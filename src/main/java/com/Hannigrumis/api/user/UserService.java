@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.Hannigrumis.api.login.Login;
 import com.Hannigrumis.api.property.EmailService;
+import com.Hannigrumis.api.property.RouteService;
 import com.Hannigrumis.api.security.JwtUtils;
 
 import io.jsonwebtoken.JwtException;
@@ -32,6 +33,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private RouteService routeService;
 
 
     public Boolean validateEmail(String email) {
@@ -71,7 +74,7 @@ public class UserService {
             
             User user = userRepository.findByEmail(login.getEmail());
             if (!user.isVerified()) {
-                emailService.sendConfirmationEmail(user.getEmail());
+                emailService.sendHtmlConfirmationEmail(user.getEmail(), routeService.getAppUrl());
                 return ResponseEntity.status(401).body("Email not verified.");
             }
             
@@ -87,6 +90,9 @@ public class UserService {
     public ResponseEntity<?> emailVerification(String token) {
         try {
             User user = userRepository.findByEmail(jwtUtils.getUsernameFromToken(token));
+            if (user.isVerified()) {
+                return ResponseEntity.badRequest().body("Email is already verified.");
+            }
             user.verify();
             userRepository.save(user);
             return ResponseEntity.ok("Email verified.");
