@@ -38,7 +38,7 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            String token = jwtUtils.generateEmailConfirmationToken(to, 1200000); // 20 min exp time
+            String token = jwtUtils.generateCustomToken(to, "confirmation", 1200000); // 20 min exp time
             String fullUrl = baseUrl + "/verify?token=" + token;
 
             Context context = new Context();
@@ -47,6 +47,27 @@ public class EmailService {
 
             helper.setTo(to);
             helper.setSubject("Email de confirmación");
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        }
+        catch (MessagingException e) {
+            System.err.println("Error al enviar el correo: " + e.getMessage());
+        }
+    }
+
+    @Async
+    public void sendHtmlResetCode(String to, Integer code) {
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            Context context = new Context();
+            context.setVariable("code", code);
+            String htmlContent = templateEngine.process("password-template", context);
+
+            helper.setTo(to);
+            helper.setSubject("Codigo de verificacion.");
             helper.setText(htmlContent, true);
 
             mailSender.send(message);

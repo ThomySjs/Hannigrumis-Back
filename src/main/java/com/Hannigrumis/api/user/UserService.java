@@ -37,11 +37,12 @@ public class UserService {
     private RouteService routeService;
 
 
-    public Boolean validateEmail(String email) {
-        if (!email.matches(this.emailRegex)) {
-            return false;
-        }
-        return true;
+    public boolean validateEmail(String email) {
+        return email.matches(this.emailRegex);
+    }
+
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 
     public ResponseEntity<?> addUser(User user) {
@@ -53,9 +54,8 @@ public class UserService {
         }
 
         User foundUser = findUserByEmail(user.getEmail());
-        if (Objects.isNull(foundUser)) {
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
+        if (Objects.isNull(foundUser)) {;
+            user.setPassword(this.encodePassword(user.getPassword()));
 
             userRepository.save(user);
             return ResponseEntity.ok("User created.");
@@ -104,5 +104,23 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public String createRecoveryJWT(String email) {
+        return jwtUtils.generateCustomToken(email, "recovery", 90000); //1.5 mins
+    }
+
+    public ResponseEntity<?> resetPassword(String token, String password) {
+        String email = jwtUtils.getEmailFronRecoveryToken(token);
+        System.out.println(email);
+
+        if (email == null) {
+            return ResponseEntity.badRequest().body("Invalid token.");
+        }
+        User user = userRepository.findByEmail(email);
+        user.setPassword(this.encodePassword(password));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password updated.");
     }
 }

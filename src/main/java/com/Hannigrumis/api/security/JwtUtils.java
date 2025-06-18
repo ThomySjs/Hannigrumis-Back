@@ -33,16 +33,17 @@ public class JwtUtils {
     public String generateToken(String username) {
         return Jwts.builder()
             .subject(username)
+            .claim("type", "authorization")
             .issuedAt(new Date())
             .expiration(new Date((new Date().getTime() + jwtExpirationMs)))
             .signWith(key)
             .compact();
     }
 
-    public String generateEmailConfirmationToken(String email, Integer expMs) {
+    public String generateCustomToken(String email, String type, Integer expMs) {
         return Jwts.builder()
             .subject(email)
-            .claim("type", "confirmation")
+            .claim("type", type)
             .issuedAt(new Date())
             .expiration(new Date((new Date().getTime() + expMs)))
             .signWith(key)
@@ -66,10 +67,26 @@ public class JwtUtils {
 
     public boolean isConfirmationToken(String jwt) {
         Claims claims = this.getClaimsFromToken(jwt);
-        if (claims.get("type") != null) {
+        if (claims.get("type").equals("confirmation")) {
             return true;
         }
         return false;
+    }
+
+    public boolean isRecoveryToken(String jwt) {
+        Claims claims = this.getClaimsFromToken(jwt);
+        System.out.println(claims.toString());
+        if (claims.get("type").equals("recovery")) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getEmailFronRecoveryToken(String jwt) {
+        if (!this.isRecoveryToken(jwt)) {
+            return null;
+        }
+        return this.getUsernameFromToken(jwt);
     }
 
     public boolean validateToken(String token) {
