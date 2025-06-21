@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import com.Hannigrumis.api.login.Login;
-import com.Hannigrumis.api.login.Register;
+import com.Hannigrumis.api.DTO.LoginDTO;
+import com.Hannigrumis.api.DTO.PasswordChangeDTO;
+import com.Hannigrumis.api.DTO.RegisterDTO;
+import com.Hannigrumis.api.DTO.RecoveryCodeDTO;
 import com.Hannigrumis.api.security.RecoveryCodeService;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 
@@ -26,14 +28,14 @@ public class UserController {
     private RecoveryCodeService recoveryCodeService;
     
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Register userData) {
+    public ResponseEntity<?> register(@RequestBody RegisterDTO userData) {
         User user = new User(userData.getName(), userData.getEmail(), userData.getPassword());
         return userService.addUser(user);
     }
 
 
     @PostMapping(path ="/login")
-    public ResponseEntity<?> login(@RequestBody Login login) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO login) {
         return userService.loginSystem(login);
     }
     
@@ -59,12 +61,13 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> checkCode(@RequestParam Integer code) {
-        String email = recoveryCodeService.validateCode(code);
+    public ResponseEntity<?> checkCode(@RequestBody RecoveryCodeDTO code) {
+        Integer parsedCode = code.getCode();
+        String email = recoveryCodeService.validateCode(parsedCode);
         if (email == null) {
             return ResponseEntity.badRequest().body("Invalid code.");
         }
-        recoveryCodeService.deleteByCode(code); //Deletes the token from the table after validation
+        recoveryCodeService.deleteByCode(parsedCode); //Deletes the token from the table after validation
         if (email.length() == 0) {
             return ResponseEntity.badRequest().body("Code has expired.");
         }
@@ -72,7 +75,7 @@ public class UserController {
     }
     
     @PutMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String password) {
-        return userService.resetPassword(token, password);
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordChangeDTO data) {
+        return userService.resetPassword(data.getToken(), data.getPassword());
     }
 }

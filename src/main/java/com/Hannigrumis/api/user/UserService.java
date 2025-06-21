@@ -64,7 +64,7 @@ public class UserService {
         return ResponseEntity.badRequest().body("User already exists.");
     }
     
-    public ResponseEntity<?> loginSystem(Login login) {
+    public ResponseEntity<?> loginSystem(LoginDTO login) {
         try {
             Authentication authenticationRequest = 
                 UsernamePasswordAuthenticationToken.unauthenticated(login.getEmail(), login.getPassword());

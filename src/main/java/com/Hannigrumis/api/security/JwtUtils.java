@@ -75,7 +75,6 @@ public class JwtUtils {
 
     public boolean isRecoveryToken(String jwt) {
         Claims claims = this.getClaimsFromToken(jwt);
-        System.out.println(claims.toString());
         if (claims.get("type").equals("recovery")) {
             return true;
         }
