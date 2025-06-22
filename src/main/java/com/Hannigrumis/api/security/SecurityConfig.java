@@ -29,9 +29,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorizedRequests -> 
                 authorizedRequests
-                .requestMatchers( "/category/all", "/product/all", "/images/**", "/register", "/login", "/verify", "/reset-password", "/swagger-ui/**", "/bus/v3/**", "/api-docs/**", "/v3/**")
+                .requestMatchers( "/category/all", "/product/all", "/images/**", "/login", "/verify", "/reset-password", "/swagger-ui/**", "/bus/v3/**", "/api-docs/**", "/v3/**")
                 .permitAll()
-                .anyRequest().hasRole("USER"))
+                .requestMatchers("/register")
+                .hasRole("ADMIN")
+                .anyRequest()
+                .hasAnyRole("COLLABORATOR", "ADMIN"))
             .formLogin(form -> form.disable())
             .exceptionHandling(exceptionHandling -> 
                 exceptionHandling.authenticationEntryPoint(unauthorizedHandler)

@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.Hannigrumis.api.login.Login;
+import com.Hannigrumis.api.DTO.LoginDTO;
 import com.Hannigrumis.api.property.EmailService;
 import com.Hannigrumis.api.property.RouteService;
 import com.Hannigrumis.api.security.JwtUtils;
@@ -24,7 +24,7 @@ public class UserService {
 
     private String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
@@ -79,7 +79,7 @@ public class UserService {
             }
             
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("token", jwtUtils.generateToken(login.getEmail()));
+            hashMap.put("token", jwtUtils.generateToken(user.getEmail(), user.getRole()));
             return ResponseEntity.ok().body(hashMap);
         }
         catch (AuthenticationException e) {

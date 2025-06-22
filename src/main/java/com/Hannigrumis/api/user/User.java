@@ -19,6 +19,7 @@ public class User {
     @NotNull
     private String password;
 
+    private String role = "COLLABORATOR";
     private Boolean verified = false;
 
     public User() {
@@ -54,6 +55,14 @@ public class User {
 
     public Boolean isVerified() {
         return verified;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void verify() {
