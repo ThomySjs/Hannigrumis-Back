@@ -36,6 +36,9 @@ public class UserService {
     @Autowired
     private RouteService routeService;
 
+    public boolean isEmpty() {
+        return userRepository.count() < 1;
+    }
 
     public boolean validateEmail(String email) {
         return email.matches(this.emailRegex);

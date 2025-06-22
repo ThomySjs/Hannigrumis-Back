@@ -29,6 +29,13 @@ JWT_SECRET=thisIsMysecregtfrdesww233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs887746
 # Email y contraseña de acceso al servidor SMTP (en este caso esta configurado para gmail)
 EMAIL_USERNAME=tuemail@gmail.com
 EMAIL_PASSWORD=uupr flxb tnlw cxtr #(Se debe utilizar una contraseña de aplicacion, no utilizar la contraseña con la que accede al email.)
+
+#Datos para crear la cuenta ADMIN:
+#La misma se crea al desplegar la aplicación y cuenta con permisos para registrar usuarios, cuyo rol será "colaborador".
+#Los colaboradores tienen acceso a todas las funcionalidades, excepto la de registrar usuarios.
+ADMIN_ACCOUNT_NAME=nombre
+ADMIN_ACCOUNT_EMAIL=uncorreo@ejemplo.com
+ADMIN_ACCOUNT_PASSWORD=unacontraseña
 ```
 
 4. Con el archivo `.env` configurado, solo queda inicializar el servidor utilizando el siguiente comando dentro de la carpeta raiz:

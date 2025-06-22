@@ -1,6 +1,7 @@
 package com.Hannigrumis.api.property;
 
 import io.github.cdimascio.dotenv.Dotenv;
+
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -10,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DotenvEnvironmentPostProcessor implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
-
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
         Dotenv dotenv = Dotenv.configure()
@@ -24,7 +24,6 @@ public class DotenvEnvironmentPostProcessor implements ApplicationListener<Appli
         props.put("jwt.secret", dotenv.get("JWT_SECRET"));
         props.put("spring.mail.username", dotenv.get("EMAIL_USERNAME"));
         props.put("spring.mail.password", dotenv.get("EMAIL_PASSWORD"));
-
         ConfigurableEnvironment environment = event.getEnvironment();
         environment.getPropertySources().addFirst(new MapPropertySource("dotenv", props));
     }
