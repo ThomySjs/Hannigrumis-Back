@@ -1,5 +1,6 @@
 package com.Hannigrumis.api.product;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +25,15 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public List<Product> getProducts(String order) {
+        List<String> sortTypes = List.of("category", "name", "id");
+        if (order == null || !sortTypes.contains(order)) {
+            return productRepository.findAll();
+        }
+        else if (order.equals("category")) {
+            return productRepository.getAllByCategory();
+        }
+        return productRepository.findAll(Sort.by(order));
     }
 
     public Product addProduct(String name, Long categoryId, MultipartFile file) {

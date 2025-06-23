@@ -49,8 +49,8 @@ public class CategoryController {
     
     @CrossOrigin
     @GetMapping("/all")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        return ResponseEntity.ok(categoryService.getAll());
+    public ResponseEntity<List<Category>> getAllCategories(@RequestParam(required=false) String order) {
+        return ResponseEntity.ok(categoryService.getAll(order));
     }
 
     @CrossOrigin

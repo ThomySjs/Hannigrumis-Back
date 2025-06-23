@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +24,12 @@ public class CategoryService {
         this.productRepository = productRepository;
     }
 
-    public List<Category> getAll() {
-        return categoryRepository.findAll();
+    public List<Category> getAll(String order) {
+        List<String> sortTypes = List.of("id", "name", "description");
+        if (order == null || !sortTypes.contains(order)) {
+            return categoryRepository.findAll();
+        }
+        return categoryRepository.findAll(Sort.by(order));
     }
 
     public Optional<Category> addCategory(String name, String description, MultipartFile file) {

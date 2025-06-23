@@ -33,8 +33,8 @@ public class ProductController {
 
     @CrossOrigin
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(productService.getProducts());
+    public ResponseEntity<List<Product>> getProducts(@RequestParam(required=false) String order) {
+        return ResponseEntity.ok(productService.getProducts(order));
     }
 
     @CrossOrigin
