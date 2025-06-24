@@ -31,13 +31,11 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @CrossOrigin
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getProducts(@RequestParam(required=false) String order) {
         return ResponseEntity.ok(productService.getProducts(order));
     }
 
-    @CrossOrigin
     @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> addProduct(@RequestParam String name,
                                         @RequestParam Long categoryId,
@@ -52,7 +50,6 @@ public class ProductController {
             return ResponseEntity.ok(product);
     }
 
-    @CrossOrigin
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProductById(id);

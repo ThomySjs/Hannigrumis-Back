@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5500")
 @RequestMapping(path = "/category")
 public class CategoryController {
 
@@ -32,7 +30,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @CrossOrigin
     @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> addCategory(@RequestPart("name") String name, 
                                         @RequestPart("description") String description, 
@@ -47,13 +44,11 @@ public class CategoryController {
         }
     }
     
-    @CrossOrigin
     @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllCategories(@RequestParam(required=false) String order) {
         return ResponseEntity.ok(categoryService.getAll(order));
     }
 
-    @CrossOrigin
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<?> deleteCategoryByName(@PathVariable Long id) {
 
