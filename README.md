@@ -24,7 +24,7 @@ DB_USER=root
 DB_PASSWORD=contraseña
 
 #Origenes permitidos (Deben ir separados por una coma)
-CORS_URL=http://127.0.0.1:5500,http://localhost:5500
+CORS_URLS=http://127.0.0.1:5500,http://localhost:5500
 
 # JWT (La clave debe ser como mínimo de 32 bytes y contener solo letras y numeros)
 JWT_SECRET=thisIsMysecregtfrdesww233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs8877465sbbdd
