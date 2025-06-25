@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping(path = "images")
 public class ImageController {
-    
+
     @Autowired
     private ImageService imageService;
 

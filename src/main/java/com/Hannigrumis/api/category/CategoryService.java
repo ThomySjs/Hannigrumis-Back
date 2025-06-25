@@ -13,7 +13,7 @@ import com.Hannigrumis.api.productImages.ImageService;
 
 @Component
 public class CategoryService {
-    
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;

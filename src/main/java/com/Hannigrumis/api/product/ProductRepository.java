@@ -19,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Transactional
     @Query("DELETE FROM Product p WHERE p.category = :category")
     int deleteProductByCategory(@Param("category") Category category);
-    
+
     List<Product> findAll(Sort sort);
 
     @Query("SELECT p FROM Product p JOIN p.category c ORDER BY c.name")

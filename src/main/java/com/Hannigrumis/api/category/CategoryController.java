@@ -31,8 +31,8 @@ public class CategoryController {
     }
 
     @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> addCategory(@RequestPart("name") String name, 
-                                        @RequestPart("description") String description, 
+    public ResponseEntity<?> addCategory(@RequestPart("name") String name,
+                                        @RequestPart("description") String description,
                                         @RequestPart("file") MultipartFile file) {
         try {
             Category category = categoryService.addCategory(name, description, file).get();
@@ -43,7 +43,7 @@ public class CategoryController {
             return ResponseEntity.badRequest().body("The category already exists.");
         }
     }
-    
+
     @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllCategories(@RequestParam(required=false) String order) {
         return ResponseEntity.ok(categoryService.getAll(order));
@@ -63,7 +63,7 @@ public class CategoryController {
                                 @RequestParam String name,
                                 @RequestParam String description,
                                 @RequestParam(required = false) MultipartFile file) {
-        
+
         try {
             return ResponseEntity.ok(categoryService.editCategory(id, name, description, file).get());
         }
@@ -74,6 +74,6 @@ public class CategoryController {
             return ResponseEntity.internalServerError().build();
         }
     }
-    
-    
+
+
 }

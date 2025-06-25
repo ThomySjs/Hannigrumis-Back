@@ -52,7 +52,7 @@ public class RecoveryCodeService {
         code.setEmail(email);
         code.setExpiration(expDate);
         recoveryCodeRepository.save(code);
-        
+
         emailService.sendHtmlResetCode(email, id);
         return true;
     }

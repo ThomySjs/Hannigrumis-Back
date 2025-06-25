@@ -12,7 +12,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 @Component
 public class AdminInit {
-    @Autowired 
+    @Autowired
     private UserService userService;
 
     @EventListener(ApplicationReadyEvent.class)

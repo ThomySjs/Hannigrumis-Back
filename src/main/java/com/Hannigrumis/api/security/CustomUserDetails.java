@@ -11,7 +11,7 @@ import com.Hannigrumis.api.user.UserRepository;
 
 @Service
 public class CustomUserDetails implements UserDetailsService{
-    
+
     @Autowired
     private UserRepository userRepository;
 

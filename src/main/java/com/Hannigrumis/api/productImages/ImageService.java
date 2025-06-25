@@ -27,7 +27,7 @@ public class ImageService {
         try {
             File newImage = new File(uploadPath + File.separator + fileName);
             file.transferTo(newImage);
-            return fileName; 
+            return fileName;
         }
         catch (IOException e) {
             return null;

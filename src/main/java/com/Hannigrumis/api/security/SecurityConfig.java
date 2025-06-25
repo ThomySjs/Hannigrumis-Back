@@ -21,13 +21,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authorizedRequests -> 
+            .authorizeHttpRequests(authorizedRequests ->
                 authorizedRequests
                 .requestMatchers( "/category/all", "/product/all", "/images/**", "/login", "/verify", "/reset-password", "/swagger-ui/**", "/bus/v3/**", "/api-docs/**", "/v3/**")
                 .permitAll()
@@ -36,12 +36,12 @@ public class SecurityConfig {
                 .anyRequest()
                 .hasAnyRole("COLLABORATOR", "ADMIN"))
             .formLogin(form -> form.disable())
-            .exceptionHandling(exceptionHandling -> 
+            .exceptionHandling(exceptionHandling ->
                 exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
             );
 
         http.addFilterBefore(authenticationJwTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
 

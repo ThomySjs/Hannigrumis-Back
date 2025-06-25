@@ -14,7 +14,7 @@ import com.Hannigrumis.api.category.CategoryService;
 
 @Component
 public class ProductService {
-    
+
     private final ProductRepository productRepository;
     private final ImageService imageService;
     private final CategoryService categoryService;
@@ -37,7 +37,7 @@ public class ProductService {
     }
 
     public Product addProduct(String name, Long categoryId, MultipartFile file) {
-        
+
         Optional<Category> categoryCheck = categoryService.findCategoryById(categoryId);
 
         if (!categoryCheck.isPresent()) {
@@ -62,13 +62,13 @@ public class ProductService {
         Optional<Product> productCkeck = productRepository.findById(id);
         Optional<Category> categoryCheck = categoryService.findCategoryById(categoryId);
 
-        
+
         if (!productCkeck.isPresent() || !categoryCheck.isPresent()) {
             return Optional.empty();
         }
         Product product = productCkeck.get();
         String imagePath = (file == null) ? productCkeck.get().getImagePath() : imageService.createImageFile(file);
-        
+
         product.setName(name);
         product.setCategory(categoryCheck.get());
         product.setImagePath(imagePath);

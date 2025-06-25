@@ -14,7 +14,10 @@ import com.Hannigrumis.api.DTO.RegisterDTO;
 import com.Hannigrumis.api.DTO.RecoveryCodeDTO;
 import com.Hannigrumis.api.security.RecoveryCodeService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -26,7 +29,7 @@ public class UserController {
     private UserService userService;
     @Autowired
     private RecoveryCodeService recoveryCodeService;
-    
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterDTO userData) {
         User user = new User(userData.getName(), userData.getEmail(), userData.getPassword());
@@ -38,12 +41,12 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginDTO login) {
         return userService.loginSystem(login);
     }
-    
+
     @GetMapping("/valid-user")
     public ResponseEntity<?> checkUser() {
         return ResponseEntity.ok().build();
     }
-    
+
     @GetMapping("/verify")
     public ResponseEntity<?> verifyEmail(@RequestParam String token) {
         return userService.emailVerification(token);
@@ -73,7 +76,7 @@ public class UserController {
         }
         return ResponseEntity.ok(userService.createRecoveryJWT(email));
     }
-    
+
     @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordChangeDTO data) {
         return userService.resetPassword(data.getToken(), data.getPassword());

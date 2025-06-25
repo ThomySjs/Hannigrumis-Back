@@ -19,7 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
         Dotenv dotenv = Dotenv.configure()
                 .ignoreIfMissing()
                 .load();
-        
+
         return dotenv.get("CORS_URLS").split(",");
     }
 

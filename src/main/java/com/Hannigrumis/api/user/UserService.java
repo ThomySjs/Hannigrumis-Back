@@ -66,21 +66,21 @@ public class UserService {
 
         return ResponseEntity.badRequest().body("User already exists.");
     }
-    
+
     public ResponseEntity<?> loginSystem(LoginDTO login) {
         try {
-            Authentication authenticationRequest = 
+            Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(login.getEmail(), login.getPassword());
 
-            Authentication authenticationResponse = 
+            Authentication authenticationResponse =
                 this.authenticationManager.authenticate(authenticationRequest);
-            
+
             User user = userRepository.findByEmail(login.getEmail());
             if (!user.isVerified()) {
                 emailService.sendHtmlConfirmationEmail(user.getEmail(), routeService.getAppUrl());
                 return ResponseEntity.status(401).body("Email not verified.");
             }
-            
+
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("token", jwtUtils.generateToken(user.getEmail(), user.getRole()));
             return ResponseEntity.ok().body(hashMap);

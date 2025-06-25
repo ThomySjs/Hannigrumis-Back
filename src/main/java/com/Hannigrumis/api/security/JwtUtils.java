@@ -15,6 +15,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtUtils {
@@ -87,6 +88,14 @@ public class JwtUtils {
             return null;
         }
         return this.getUsernameFromToken(jwt);
+    }
+
+    public String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+        if  (headerAuth != null && headerAuth.startsWith("Bearer")) {
+            return headerAuth.substring(7);
+        }
+        return null;
     }
 
     public boolean validateToken(String token) {

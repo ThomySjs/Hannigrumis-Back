@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Product {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +24,7 @@ public class Product {
     private String imagePath;
 
     public Product() {
-        
+
     }
 
     public Product(String name, Category category, String imagePath) {

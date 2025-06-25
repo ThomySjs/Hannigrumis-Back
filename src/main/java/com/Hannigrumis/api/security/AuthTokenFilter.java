@@ -29,11 +29,11 @@ public class AuthTokenFilter extends OncePerRequestFilter{
         FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            String jwt = parseJwt(request);
+            String jwt = jwtUtils.parseJwt(request);
             if (jwt != null && jwtUtils.validateToken(jwt) && !jwtUtils.isConfirmationToken(jwt) && !jwtUtils.isRecoveryToken(jwt)) {
                 String username = jwtUtils.getUsernameFromToken(jwt);
                 UserDetails userDetails = userDetailService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = 
+                UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -49,11 +49,4 @@ public class AuthTokenFilter extends OncePerRequestFilter{
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        if  (headerAuth != null && headerAuth.startsWith("Bearer")) {
-            return headerAuth.substring(7);
-        }
-        return null;
-    }
 }
