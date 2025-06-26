@@ -3,7 +3,7 @@ package com.Hannigrumis.api.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;  
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Hannigrumis.api.DTO.LoginDTO;
 import com.Hannigrumis.api.DTO.PasswordChangeDTO;
 import com.Hannigrumis.api.DTO.RegisterDTO;
+import com.Hannigrumis.api.DTO.PasswordDTO;
 import com.Hannigrumis.api.DTO.RecoveryCodeDTO;
 import com.Hannigrumis.api.security.RecoveryCodeService;
 
@@ -80,5 +81,10 @@ public class UserController {
     @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordChangeDTO data) {
         return userService.resetPassword(data.getToken(), data.getPassword());
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> putMethodName(HttpServletRequest request, @RequestBody PasswordDTO password) {
+        return userService.changePassword(request, password);
     }
 }

@@ -13,11 +13,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.Hannigrumis.api.DTO.LoginDTO;
+import com.Hannigrumis.api.DTO.PasswordDTO;
 import com.Hannigrumis.api.property.EmailService;
 import com.Hannigrumis.api.property.RouteService;
 import com.Hannigrumis.api.security.JwtUtils;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class UserService {
@@ -48,11 +50,15 @@ public class UserService {
         return passwordEncoder.encode(password);
     }
 
+    public boolean validPasswordLenght(String password) {
+        return password.strip().length() >= 8;
+    }
+
     public ResponseEntity<?> addUser(User user) {
         if (!validateEmail(user.getEmail())) {
             return ResponseEntity.badRequest().body("Invalid email.");
         }
-        if (user.getPassword().strip().length() < 8) {
+        if (!this.validPasswordLenght(user.getPassword())) {
             return ResponseEntity.badRequest().body("Password must be 8+ characters long.");
         }
 
@@ -125,5 +131,22 @@ public class UserService {
         userRepository.save(user);
 
         return ResponseEntity.ok("Password updated.");
+    }
+
+    public ResponseEntity<?> changePassword(HttpServletRequest request, PasswordDTO password){
+        if (!this.validPasswordLenght(password.getNewPassword())) {
+            return ResponseEntity.badRequest().body("New password must be 8+ characters long.");
+        }
+        String token = jwtUtils.parseJwt(request);
+        String email = jwtUtils.getUsernameFromToken(token);
+
+        User user = userRepository.findByEmail(email);
+        if (!passwordEncoder.matches(password.getOldPassword(), user.getPassword())) {
+            return ResponseEntity.badRequest().body("Password dont match.");
+        }
+        user.setPassword(this.encodePassword(password.getNewPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password updated");
     }
 }
