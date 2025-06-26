@@ -1,6 +1,6 @@
 ### Requisitos
 
-- **Java** 23 o superior  
+- **Java** 23 o superior
 - **Maven** 3.9.9 o superior
 
 ### Pasos para iniciar correctamente el servidor
@@ -19,7 +19,7 @@ git clone https://github.com/ThomySjs/Hannigrumis-Back
 
 ```env
 # db
-DB_URL=jdbc:mysql://localhost:3306/mydb?createDatabaseIfNotExist=true
+DB_URL=jdbc:mysql://localhost:3306/hannigrumis?createDatabaseIfNotExist=true
 DB_USER=root
 DB_PASSWORD=contraseña
 
