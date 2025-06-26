@@ -35,13 +35,15 @@ public class ImageService {
 
     }
 
+
     public byte[] getImage(String filename) {
         String basePath = new File(".").getAbsolutePath();
         String uploadPath = basePath + File.separator + "uploads";
 
         File file = new File(uploadPath + File.separator + filename);
         if (!file.exists()) {
-            file = new File(uploadPath + File.separator + "default.jpg");
+            String defaultPath = new File("src/main/resources/static/images").getAbsolutePath();
+            file = new File(defaultPath + File.separator + "default.png");
         }
         try{
             return FileUtil.readAsByteArray(file);
