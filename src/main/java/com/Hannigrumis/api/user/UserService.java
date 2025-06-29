@@ -1,6 +1,7 @@
 package com.Hannigrumis.api.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.Hannigrumis.api.property.RouteService;
 import com.Hannigrumis.api.security.JwtUtils;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -39,6 +41,8 @@ public class UserService {
     private EmailService emailService;
     @Autowired
     private RouteService routeService;
+    @Autowired
+    EntityManager entityManager;
 
     public boolean isEmpty() {
         return userRepository.count() < 1;
@@ -152,8 +156,13 @@ public class UserService {
         return ResponseEntity.ok("Password updated");
     }
 
-    public ResponseEntity<?> getUsers() {
-        return ResponseEntity.ok(userRepository.getAllUsers());
+    public ResponseEntity<?> getUsers(String order) {
+        List<String> sortTypes = List.of("id", "name", "email", "verified");
+        if (order == null || !sortTypes.contains(order)) {
+            return ResponseEntity.ok(userRepository.findAll());
+        }
+        String query = "SELECT new com.Hannigrumis.api.DTO.UserDTO(u.id, u.name, u.email, u.verified) FROM User u ORDER BY u." + order;
+        return ResponseEntity.ok(entityManager.createQuery(query, UserDTO.class).getResultList());
     }
 
     public ResponseEntity<?> editUser(UserDTO user) {

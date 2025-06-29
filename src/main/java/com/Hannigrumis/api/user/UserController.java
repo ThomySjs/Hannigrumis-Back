@@ -48,8 +48,8 @@ public class UserController {
     }
 
     @GetMapping("/get-users")
-    public ResponseEntity<?> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<?> getUsers(@RequestParam(required=false) String order) {
+        return userService.getUsers(order);
     }
 
     @PutMapping("/edit-user")
