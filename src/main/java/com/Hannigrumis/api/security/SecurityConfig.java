@@ -31,7 +31,7 @@ public class SecurityConfig {
                 authorizedRequests
                 .requestMatchers( "/category/all", "/product/all", "/images/**", "/login", "/verify", "/reset-password", "/swagger-ui/**", "/bus/v3/**", "/api-docs/**", "/v3/**")
                 .permitAll()
-                .requestMatchers("/register")
+                .requestMatchers("/register", "/get-users", "/edit-user", "/delete-user/**")
                 .hasRole("ADMIN")
                 .anyRequest()
                 .hasAnyRole("COLLABORATOR", "ADMIN"))

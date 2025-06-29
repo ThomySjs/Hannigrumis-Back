@@ -1,5 +1,8 @@
 package com.Hannigrumis.api.security;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,14 +13,14 @@ import com.Hannigrumis.api.user.User;
 import com.Hannigrumis.api.user.UserRepository;
 
 @Service
-public class CustomUserDetails implements UserDetailsService{
+public class CustomUserDetails implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found.");
         }
@@ -27,5 +30,19 @@ public class CustomUserDetails implements UserDetailsService{
             .password(user.getPassword())
             .roles(user.getRole())
             .build();
+    }
+
+    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
+        try {
+            User user = userRepository.findById(id).get();
+            return org.springframework.security.core.userdetails.User
+            .withUsername(user.getEmail())
+            .password(user.getPassword())
+            .roles(user.getRole())
+            .build();
+        }
+        catch (NoSuchElementException e) {
+            throw new UsernameNotFoundException("User not found.");
+        }
     }
 }

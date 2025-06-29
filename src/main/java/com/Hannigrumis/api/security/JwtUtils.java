@@ -31,9 +31,10 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, Long id, String role) {
         return Jwts.builder()
             .subject(username)
+            .claim("user_id", id)
             .claim("type", "authorization")
             .claim("role", role)
             .issuedAt(new Date())
@@ -58,6 +59,10 @@ public class JwtUtils {
             .parseSignedClaims(jwt)
             .getPayload()
             .getSubject();
+    }
+
+    public Long getIdFromToken(String jwt) {
+        return Long.parseLong(this.getClaimsFromToken(jwt).get("user_id").toString());
     }
 
     public Claims getClaimsFromToken(String jwt) {

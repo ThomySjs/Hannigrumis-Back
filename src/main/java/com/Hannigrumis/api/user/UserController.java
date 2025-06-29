@@ -2,6 +2,7 @@ package com.Hannigrumis.api.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Hannigrumis.api.DTO.LoginDTO;
 import com.Hannigrumis.api.DTO.PasswordChangeDTO;
 import com.Hannigrumis.api.DTO.RegisterDTO;
+import com.Hannigrumis.api.DTO.UserDTO;
 import com.Hannigrumis.api.DTO.PasswordDTO;
 import com.Hannigrumis.api.DTO.RecoveryCodeDTO;
 import com.Hannigrumis.api.security.RecoveryCodeService;
@@ -18,6 +20,8 @@ import com.Hannigrumis.api.security.RecoveryCodeService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 
@@ -41,6 +45,21 @@ public class UserController {
     @PostMapping(path ="/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO login) {
         return userService.loginSystem(login);
+    }
+
+    @GetMapping("/get-users")
+    public ResponseEntity<?> getUsers() {
+        return userService.getUsers();
+    }
+
+    @PutMapping("/edit-user")
+    public ResponseEntity<?> editUser(@RequestBody UserDTO user) {
+        return userService.editUser(user);
+    }
+
+    @DeleteMapping("/delete-user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+        return userService.deleteUser(id);
     }
 
     @GetMapping("/valid-user")

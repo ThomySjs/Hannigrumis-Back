@@ -1,5 +1,6 @@
 package com.Hannigrumis.api.user;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +15,7 @@ public class User {
     private Long id;
     @NotNull
     private String name;
-    @NotNull
+    @Column(unique = true, nullable = false)
     private String email;
     @NotNull
     private String password;
@@ -67,6 +68,10 @@ public class User {
 
     public void verify() {
         this.verified = true;
+    }
+
+    public void unverify() {
+        this.verified = false;
     }
 
     public void setEmail(String email) {

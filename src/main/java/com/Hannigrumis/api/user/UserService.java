@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.Hannigrumis.api.DTO.LoginDTO;
 import com.Hannigrumis.api.DTO.PasswordDTO;
+import com.Hannigrumis.api.DTO.UserDTO;
 import com.Hannigrumis.api.property.EmailService;
 import com.Hannigrumis.api.property.RouteService;
 import com.Hannigrumis.api.security.JwtUtils;
@@ -88,7 +90,7 @@ public class UserService {
             }
 
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("token", jwtUtils.generateToken(user.getEmail(), user.getRole()));
+            hashMap.put("token", jwtUtils.generateToken(user.getEmail(), user.getId(), user.getRole()));
             return ResponseEntity.ok().body(hashMap);
         }
         catch (AuthenticationException e) {
@@ -148,5 +150,36 @@ public class UserService {
         userRepository.save(user);
 
         return ResponseEntity.ok("Password updated");
+    }
+
+    public ResponseEntity<?> getUsers() {
+        return ResponseEntity.ok(userRepository.getAllUsers());
+    }
+
+    public ResponseEntity<?> editUser(UserDTO user) {
+        User foundUser = userRepository.getReferenceById(user.getId());
+        if (!this.validateEmail(user.getEmail())) {
+            return ResponseEntity.badRequest().body("Invalid email.");
+        }
+        if(foundUser.equals(null)) {
+            return ResponseEntity.badRequest().body("User not found.");
+        }
+        if (foundUser.getEmail() != user.getEmail()) {
+            foundUser.setEmail(user.getEmail());
+            foundUser.unverify();
+        }
+        foundUser.setName(user.getName());
+        try {
+            userRepository.save(foundUser);
+            return ResponseEntity.ok("User updated.");
+        }
+        catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(309).body("Email is already in use.");
+        }
+    }
+
+    public ResponseEntity<?> deleteUser(Long id) {
+        userRepository.deleteById(id);
+        return ResponseEntity.ok("User deleted.");
     }
 }
