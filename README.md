@@ -47,3 +47,8 @@ ADMIN_ACCOUNT_PASSWORD=unacontraseña
 mvn spring-boot:run
 ```
 
+### Documentación de los endpoints
+```
+http://backendurl/swagger-ui/index.html#/
+```
+
