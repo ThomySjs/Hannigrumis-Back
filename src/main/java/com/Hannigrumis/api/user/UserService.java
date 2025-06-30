@@ -147,7 +147,6 @@ public class UserService {
 
     public ResponseEntity<?> resetPassword(String token, String password) {
         String email = jwtUtils.getEmailFronRecoveryToken(token);
-        System.out.println(email);
 
         if (email == null) {
             return ResponseEntity.badRequest().body("Invalid token.");
