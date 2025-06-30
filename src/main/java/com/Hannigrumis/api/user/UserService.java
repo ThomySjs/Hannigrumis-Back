@@ -2,11 +2,14 @@ package com.Hannigrumis.api.user;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.Hannigrumis.api.DTO.LoginDTO;
 import com.Hannigrumis.api.DTO.PasswordDTO;
@@ -44,6 +49,8 @@ public class UserService {
     private RouteService routeService;
     @Autowired
     EntityManager entityManager;
+    @Autowired
+    private TemplateEngine templateEngine;
 
     public boolean isEmpty() {
         return userRepository.count() < 1;
@@ -107,15 +114,27 @@ public class UserService {
         try {
             User user = userRepository.findByEmail(jwtUtils.getUsernameFromToken(token));
             if (user.isVerified()) {
-                return ResponseEntity.badRequest().body("Email is already verified.");
+                return buildHtmlResponse("Email is already verified.", "/images/bad_request.png", HttpStatus.BAD_REQUEST);
             }
             user.verify();
             userRepository.save(user);
-            return ResponseEntity.ok("Email verified.");
+            return buildHtmlResponse("Email verified.", "/images/ok.png", HttpStatus.OK);
         }
         catch (JwtException e) {
-            return ResponseEntity.badRequest().build();
+            return buildHtmlResponse("Invalid token.", "/images/bad_request.png", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public ResponseEntity<?> buildHtmlResponse(String message, String imagePath, HttpStatus status) {
+        Context context = new Context();
+        context.setVariables(Map.of(
+            "message",  message,
+            "image", imagePath,
+            "favicon", "/images/favicon.svg"
+        ));
+        String htmlContent = templateEngine.process("email-verification", context);
+
+        return ResponseEntity.status(status).contentType(MediaType.TEXT_HTML).body(htmlContent);
     }
 
     public User findUserByEmail(String email) {

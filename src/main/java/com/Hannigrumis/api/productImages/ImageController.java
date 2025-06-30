@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping(path = "images")
+@RequestMapping(path = "image")
 public class ImageController {
 
     @Autowired
