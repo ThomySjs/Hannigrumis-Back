@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" th:href=${favicon}>
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <title>Hannigrumis</title>
     <style>
         * {
@@ -41,7 +41,7 @@
 </head>
 <body>
     <div class="container">
-        <img th:src=${image}/>
+        <img th:src="${image}"/>
         <h2 th:text="${message}"></h2>
     </div>
 </body>
