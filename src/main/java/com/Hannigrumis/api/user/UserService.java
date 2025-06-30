@@ -151,6 +151,9 @@ public class UserService {
         if (email == null) {
             return ResponseEntity.badRequest().body("Invalid token.");
         }
+        if (password == null || password.length() < 8) {
+            return ResponseEntity.badRequest().body("Invalid password");
+        }
         User user = userRepository.findByEmail(email);
         user.setPassword(this.encodePassword(password));
         userRepository.save(user);
