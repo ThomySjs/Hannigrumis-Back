@@ -2,6 +2,7 @@ package com.Hannigrumis.api.user;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 public class UserService {
 
-    private String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+    final private String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -166,25 +167,28 @@ public class UserService {
     }
 
     public ResponseEntity<?> editUser(UserDTO user) {
-        User foundUser = userRepository.getReferenceById(user.getId());
         if (!this.validateEmail(user.getEmail())) {
             return ResponseEntity.badRequest().body("Invalid email.");
         }
-        if(foundUser.equals(null)) {
-            return ResponseEntity.badRequest().body("User not found.");
-        }
-        if (foundUser.getEmail() != user.getEmail()) {
-            foundUser.setEmail(user.getEmail());
-            foundUser.unverify();
-        }
-        foundUser.setName(user.getName());
         try {
+            User foundUser = userRepository.findById(user.getId()).get();
+            if (!foundUser.getEmail().equals(user.getEmail())) {
+                foundUser.setEmail(user.getEmail());
+                foundUser.unverify();
+            }
+            foundUser.setName(user.getName());
             userRepository.save(foundUser);
-            return ResponseEntity.ok("User updated.");
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("User not found.");
         }
         catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(309).body("Email is already in use.");
         }
+        catch (Exception e) {
+            System.out.println("An error ocurred: " + e);
+        }
+        return ResponseEntity.ok("User updated.");
     }
 
     public ResponseEntity<?> deleteUser(Long id) {
