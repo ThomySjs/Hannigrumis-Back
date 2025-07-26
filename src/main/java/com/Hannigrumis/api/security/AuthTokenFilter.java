@@ -3,6 +3,7 @@ package com.Hannigrumis.api.security;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ public class AuthTokenFilter extends OncePerRequestFilter{
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
+    @Qualifier("customUserDetails")
     private CustomUserDetails userDetailService;
 
     @Override

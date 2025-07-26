@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.Hannigrumis.api.user.User;
 import com.Hannigrumis.api.user.UserRepository;
 
-@Service
+@Service("customUserDetails")
 public class CustomUserDetails implements UserDetailsService {
 
     @Autowired

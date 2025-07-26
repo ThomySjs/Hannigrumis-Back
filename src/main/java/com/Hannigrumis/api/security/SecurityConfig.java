@@ -29,7 +29,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorizedRequests ->
                 authorizedRequests
-                .requestMatchers( "/category/all", "/product/all", "/image/**", "/images/**", "/login", "/verify", "/reset-password", "/swagger-ui/**", "/bus/v3/**", "/api-docs/**", "/v3/**")
+                .requestMatchers( "/category/all", "/product/all", "/image/**", "/images/**", "/login", "/verify", "/reset-password")
                 .permitAll()
                 .requestMatchers("/register", "/get-users", "/edit-user", "/delete-user/**")
                 .hasRole("ADMIN")
