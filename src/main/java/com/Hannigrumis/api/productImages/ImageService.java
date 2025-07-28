@@ -2,68 +2,45 @@ package com.Hannigrumis.api.productImages;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.aspectj.util.FileUtil;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
+import io.github.cdimascio.dotenv.Dotenv;
+
 
 
 @Component
 public class ImageService {
 
-    public String createImageFile(MultipartFile file) {
+    public String upload(MultipartFile multipartFile) {
+        Dotenv dotenv = Dotenv.configure()
+                        .ignoreIfMissing()
+                        .load();
 
-        String basePath = new File(".").getAbsolutePath();
-        String uploadPath = basePath + File.separator + "uploads";
-        File dir = new File(uploadPath);
+        Map params = ObjectUtils.asMap(
+            "use_filename", true,
+            "unique_filename", false,
+            "overwrite", true
+        );
 
-        String fileName = file.getOriginalFilename();
-
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-
+        Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
         try {
-            File newImage = new File(uploadPath + File.separator + fileName);
-            file.transferTo(newImage);
-            return fileName;
+            File tempFile = File.createTempFile("upload-", multipartFile.getOriginalFilename());
+            multipartFile.transferTo(tempFile);
+
+            Map uploadResult = cloudinary.uploader().upload(tempFile, params);
+            tempFile.delete();
+
+            return (String) uploadResult.get("secure_url");
         }
         catch (IOException e) {
             return null;
         }
-
-    }
-
-
-    public byte[] getImage(String filename) {
-        String basePath = new File(".").getAbsolutePath();
-        String uploadPath = basePath + File.separator + "uploads";
-
-        File file = new File(uploadPath + File.separator + filename);
-        if (!file.exists()) {
-            String defaultPath = new File("src/main/resources/static/images").getAbsolutePath();
-            file = new File(defaultPath + File.separator + "default.png");
-        }
-        try{
-            return FileUtil.readAsByteArray(file);
-        }
-        catch (IOException e) {
-            return null;
-        }
-
-    }
-
-    public Boolean validateFormat(String fileName) {
-        String[] nameParts = fileName.split(".");
-
-        System.out.println(nameParts);
-
-        if (nameParts[1].equalsIgnoreCase("jpg")) {
-            return true;
-        }
-
-        return false;
     }
 
 }

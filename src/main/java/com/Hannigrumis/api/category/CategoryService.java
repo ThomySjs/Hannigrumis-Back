@@ -40,7 +40,7 @@ public class CategoryService {
         }
 
         Category category = new Category(name, description);
-        String imageName = imageService.createImageFile(file);
+        String imageName = imageService.upload(file);
         category.setImagePath(imageName);
 
         return Optional.of(categoryRepository.saveAndFlush(category));
@@ -63,7 +63,7 @@ public class CategoryService {
         try{
             Category category = categoryRepository.findById(id).get();
 
-            String imagePath = (file == null) ? category.getImagePath() : imageService.createImageFile(file);
+            String imagePath = (file == null) ? category.getImagePath() : imageService.upload(file);
 
             category.setName(name);
             category.setImagePath(imagePath);

@@ -48,7 +48,7 @@ public class ProductService {
 
         Product product = new Product(name, category, null);
 
-        String imagePath = imageService.createImageFile(file);
+        String imagePath = imageService.upload(file);
         product.setImagePath(imagePath);
 
         return productRepository.save(product);
@@ -67,7 +67,7 @@ public class ProductService {
             return Optional.empty();
         }
         Product product = productCkeck.get();
-        String imagePath = (file == null) ? productCkeck.get().getImagePath() : imageService.createImageFile(file);
+        String imagePath = (file == null) ? productCkeck.get().getImagePath() : imageService.upload(file);
 
         product.setName(name);
         product.setCategory(categoryCheck.get());
